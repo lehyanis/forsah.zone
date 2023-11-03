@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
+    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forsah.zone</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp"
+      rel="stylesheet">
+    <link rel="stylesheet" href="static/styles.css">
+    
+
+</head>
+<body>
+    <div class="container">
+    
+        <main>
+            <div class="logo">
+                <img src="static/images/logo.png">
+                <h1>Forsah<span class="danger">.zone</span></h1>
+            </div>
+            <div class="right">
+                <div class="top">
+                        <div class="theme-toggler">
+                            <span class="material-icons-sharp active">light_mode</span>
+                            <span class="material-icons-sharp">dark_mode</span>
+                        </div>
+                    
+                </div>
+            </div>
+            <div class="box">
+
+            </div>
+            <div class="summary">
+                <h2>Summary</h2>
+                <table class="table" id="Summary", border="1">
+                    <thead>
+                        <tr>
+                            <th>Symbol</th>
+                            <th>Count</th>
+                            <th>Avg Price</th>
+                            <th>Avg Size</th>
+                            <th>Above Ask</th>
+                            <th>At Ask</th>
+                            <th>Between</th>
+                            <th>At Bid</th>
+                            <th>Below Bid</th>
+                            <th>Signal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in summary %}
+                            <tr>
+                                <td class="symbol">{{ row.symbol }}</td>
+                                <td class="count">{{ row.Count }}</td>
+                                <td class="avgprice">{{ row["Avg Price"] }}</td>
+                                <td class="avgsize">{{ "{:,.0f}".format(row["Avg Size"]) }}</td>
+                                <td class="aboveask">{{ row["Above Ask"] if row["Above Ask"] is not none else '' }}</td>
+                                <td class="atask">{{ row["At Ask"] if row["At Ask"] is not none else ''}}</td>
+                                <td class="between">{{ row["Between"] if row["Between"] is not none else ''}}</td>
+                                <td class="atbid">{{ row["At Bid"] if row["At Bid"] is not none else ''}}</td>
+                                <td class="belowbid">{{ row["Below Bid"] if row["Below Bid"] is not none else '' }}</td>
+                                <td class="signal {{ 'signal-negative' if row['Signal'] < 0 else 'signal-positive' if row['Signal'] > 0 else '' }}">{{row["Signal"] }}</td>
+                                
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+            
+            <div class="trades">
+                <h2>Unusal Volume</h2>
+                <table class="table" id="trades", border="1">
+                    <thead>
+                        <tr>
+                            <th>Symbol</th>
+                            <th>date</th>
+                            <th>time</th>
+                            <th>close</th>
+                            <th>Price</th>
+                            <th>Size</th>
+                            <th>Conditions</th>
+                            <th>Quote</th>
+                            <th>Signal</th>
+                            <th>QuoteCond</th>
+                            <th>EMA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for trade in trades %}
+                            <tr>
+                                <td class="symbol">{{ trade.symbol }}</td>
+                                <td class="date">{{ trade.date }}</td>
+                                <td class="time">{{ trade.time}}</td>
+                                <td class="close">{{ "{:.2f}".format(trade.close) }}</td>
+                                <td class="price">{{ "{:.2f}".format(trade.price) }}</td>
+                                <td class="size">{{ "{:,.0f}".format(trade.size) }}</td>
+                                <td class="conditions">{{ trade.conditions }}</td>
+                                <td class="quote 
+                                    {{ 'above-ask' if trade.Quote == 'Above Ask' else 
+                                       'at-ask' if trade.Quote == 'At ask' else 
+                                       'between' if trade.Quote == 'Between' else 
+                                       'at-bid' if trade.Quote == 'At bid' else 
+                                       'below-bid' if trade.Quote == 'Below bid' else '' 
+                                    }}">
+                                    {{ trade.Quote }}
+                                </td>
+                                <td class="signal">
+                                    {% if trade.signal == -1 %}
+                                    <span class="material-icons-sharp arrow-down">arrow_drop_down</span>
+                                    {% elif trade.signal == 0 %}
+                                    <!-- Do nothing or display a neutral image if you have one -->
+                                    {% else %}
+                                    <span class="material-icons-sharp arrow-up">arrow_drop_up</span>
+                                    {% endif %}
+                                </td>
+                                <td class="quotCond">{{ trade.QuoteCond}}</td>
+                                <td class="ema">{{ trade.EMA }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </main>
+        
+    </div>
+    <script src="static/index.js"></script>
+    <script>
+        $(document).ready( function () {
+            
+            $('#Summary').DataTable(
+                {
+                    select: true
+                }
+            );
+        } );
+    </script>
+    <script>
+        $(document).ready( function () {
+            
+            $('#trades').DataTable({
+                select: true
+            });
+            
+        } );
+
+    </script>
+</body>
+</html>
