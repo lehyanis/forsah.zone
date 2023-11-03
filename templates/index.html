@@ -41,31 +41,28 @@
                     <thead>
                         <tr>
                             <th>Symbol</th>
+                            <th>Days</th>
                             <th>Count</th>
                             <th>Avg Price</th>
-                            <th>Avg Size</th>
-                            <th>Above Ask</th>
-                            <th>At Ask</th>
-                            <th>Between</th>
-                            <th>At Bid</th>
-                            <th>Below Bid</th>
                             <th>Signal</th>
+                            <th>Buy</th>
+                            <th>Sell</th>
+                            <th>Delta</th>
+                            <th>%</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for row in summary %}
                             <tr>
                                 <td class="symbol">{{ row.symbol }}</td>
+                                <td class="Days">{{ row.Days }}</td>
                                 <td class="count">{{ row.Count }}</td>
-                                <td class="avgprice">{{ row["Avg Price"] }}</td>
-                                <td class="avgsize">{{ "{:,.0f}".format(row["Avg Size"]) }}</td>
-                                <td class="aboveask">{{ row["Above Ask"] if row["Above Ask"] is not none else '' }}</td>
-                                <td class="atask">{{ row["At Ask"] if row["At Ask"] is not none else ''}}</td>
-                                <td class="between">{{ row["Between"] if row["Between"] is not none else ''}}</td>
-                                <td class="atbid">{{ row["At Bid"] if row["At Bid"] is not none else ''}}</td>
-                                <td class="belowbid">{{ row["Below Bid"] if row["Below Bid"] is not none else '' }}</td>
-                                <td class="signal {{ 'signal-negative' if row['Signal'] < 0 else 'signal-positive' if row['Signal'] > 0 else '' }}">{{row["Signal"] }}</td>
-                                
+                                <td class="Avg Price">{{ row["Average Price"] }}</td>
+                                <td class="Signal">{{ row.Signal }}</td>
+                                <td class="Buy">{{ row.Buy }}</td>
+                                <td class="Sell">{{ row.Sell }}</td>
+                                <td class="Delta">{{ row.Delta }}</td>
+                                <td class="Percent">{{ row.pc }}</td>
                             </tr>
                         {% endfor %}
                     </tbody>
@@ -97,9 +94,9 @@
                                 <td class="symbol">{{ trade.symbol }}</td>
                                 <td class="date">{{ trade.date }}</td>
                                 <td class="time">{{ trade.time}}</td>
-                                <td class="close">{{ "{:.2f}".format(trade.close) }}</td>
-                                <td class="price">{{ "{:.2f}".format(trade.price) }}</td>
-                                <td class="size">{{ "{:,.0f}".format(trade.size) }}</td>
+                                <td class="close">{{ ("{:.2f}".format(trade.close) if trade.close is defined else '0.00') }}</td>
+                                <td class="price">{{ ("{:.2f}".format(trade.price) if trade.price is defined else '0.00') }}</td>
+                                <td class="size">{{ ("{:,}".format(trade.size) if trade.size is defined else '0') }}</td>
                                 <td class="conditions">{{ trade.conditions }}</td>
                                 <td class="quote 
                                     {{ 'above-ask' if trade.Quote == 'Above Ask' else 
@@ -110,7 +107,7 @@
                                     }}">
                                     {{ trade.Quote }}
                                 </td>
-                                <td class="signal">
+                                <td class="signal" >
                                     {% if trade.signal == -1 %}
                                     <span class="material-icons-sharp arrow-down">arrow_drop_down</span>
                                     {% elif trade.signal == 0 %}
