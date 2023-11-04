@@ -1,18 +1,24 @@
 from flask import Flask, render_template
-from flask_sqlalchemy import SQLAlchemy
+import pymysql
+import pymysql.cursors
 import os
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:RA2BkqTnxzsU20yp1Klr@containers-us-west-163.railway.app:6951/railway'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-db = SQLAlchemy(app)
+connection = pymysql.connect(host='monorail.proxy.rlwy.net',
+                                port=55068,
+                                user='root',
+                                password='46f23AA--1Ga3h62GfcFGGF35GBcBEa2',
+                                database='railway',
+                                charset='utf8mb4',
+                                cursorclass=pymysql.cursors.DictCursor)
 
 @app.route('/')
 def index():
-    '''Returns the homepage'''
-    data1 = db.session.execute(text("SELECT * FROM SelectedTrades")).fetchall()
-    data2 = db.session.execute(text("SELECT * FROM VolumeDeltaSummary")).fetchall()
+    with connection.cursor() as cursor:
+        sql1 = "SELECT * FROM SelectedTrades"
+        sql2 = "SELECT * FROM VolumeDeltaSummary"
+        cursor.execute(sql1, sql2)
+        data1, data2 = cursor.fetchall()
         
     return render_template('index.html', summary=data2, trades=data1)
 
