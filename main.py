@@ -10,17 +10,21 @@ connection = pymysql.connect(host='monorail.proxy.rlwy.net',
                                 password='46f23AA--1Ga3h62GfcFGGF35GBcBEa2',
                                 database='railway',
                                 charset='utf8mb4',
-                                cursorclass=pymysql.cursors.DictCursor)
+                                cursorclass=pymysql.cursors.DictCursor,
+                                client_flag=pymysql.constants.CLIENT.MULTI_STATEMENTS)
 
 @app.route('/')
 def index():
     with connection.cursor() as cursor:
-        sql1 = "SELECT * FROM SelectedTrades"
-        sql2 = "SELECT * FROM VolumeDeltaSummary"
-        cursor.execute(sql1, sql2)
-        data1, data2 = cursor.fetchall()
+        sql = "SELECT * FROM SelectedTrades"
+        cursor.execute(sql)
+        SelectedTrades = cursor.fetchall()
         
-    return render_template('index.html', summary=data2, trades=data1)
+        sql2 = "SELECT * FROM VolumeDeltaSummary"
+        cursor.execute(sql2)
+        VolumeDeltaSummary = cursor.fetchall()
+   
+    return render_template('index.html', summary=VolumeDeltaSummary, trades=SelectedTrades)
 
 
 @app.route('/home')
